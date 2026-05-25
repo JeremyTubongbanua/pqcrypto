@@ -186,16 +186,13 @@ class Indcpa {
   }
 
   static Poly _genMatrixPoly(Uint8List rho, int i, int j) {
-    // Input for XOF: rho || j || i (Note: indices are 0 to 255?, no 0 to k-1)
-    // Actually indices are stored as bytes: i and j.
-    // Spec: XOF(rho || j || i) where j and i are byte-encoded.
-    // "j" is the column index?
-    // FIPS 203: A[i][j] <- SampleNTT(XOF(rho, j, i))
-
+    // FIPS 203 Algorithm 13 (KeyGen): A[i][j] = SampleNTT(XOF(rho, j, i))
+    // Callers pass (rho, j, i) so formal `i` is column, formal `j` is row.
+    // XOF input is rho || col || row, i.e. rho || i || j here.
     final input = Uint8List(32 + 2);
     input.setAll(0, rho);
-    input[32] = j;
-    input[33] = i;
+    input[32] = i;
+    input[33] = j;
 
     // Request enough bytes (SHAKE-128 rate is 168. 3 blocks = 504.
     // 256 coeffs * 12 bits = 384 bytes (dense).
