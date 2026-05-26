@@ -80,7 +80,10 @@ class KyberKem {
     }
 
     // (rho, sigma) := G(d || k)  — FIPS 203 §5.1 Algorithm 13
-    final rhoSigma = _G(Uint8List.fromList([...d, params.k]));
+    final Uint8List dk = Uint8List(33)
+      ..setAll(0, d)
+      ..[32] = params.k;
+    final rhoSigma = _G(dk);
 
     // Indcpa KeyGen
     return Indcpa.generateKeyPair(rhoSigma, z, params);
