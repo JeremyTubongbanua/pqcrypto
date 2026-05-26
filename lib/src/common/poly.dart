@@ -22,9 +22,7 @@ class Poly {
     int shift = 26;
     int product = (a * v) >> shift;
     int res = a - product * q;
-    // Conditional corrections to ensure result is in [0, q-1]
     if (res < 0) res += q;
-    if (res >= q) res -= q;
     return res;
   }
 
